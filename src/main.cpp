@@ -2,6 +2,7 @@
 import CharacterSheet;
 int main()
 {
-    std::cout<<"does "<<tiefling.race_name<<" have a darkvision: "<<tiefling.darkvision;
+    Character new_character(tiefling);
+    std::cout<<"this character has "<<new_character._attr.charisma<<" charisma and "<<new_character._attr.strength<<"strength\n";
     return 0;
 }
