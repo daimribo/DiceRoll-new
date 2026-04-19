@@ -2,8 +2,10 @@ module;
 #include <string>
 #include <vector>
 export module CharacterSheet;
-export enum RACE_NAME{tiefling};
-export enum ATTRIBUTES{stre, dex, con, intelli, wis, cha};
+
+export enum RACE_NAME{tiefling, yuanti};
+enum ATTRIBUTES{stre, dex, con, intelli, wis, cha};
+enum FEATURE_TYPES{immunities, resistance, weakness, };
 struct attributes
 {
     int strength = 0;
@@ -13,29 +15,25 @@ struct attributes
     int wisdom = 0;
     int charisma = 0;
 };
+/*struct feat
+{
+    
+};
+struct role
+{
+    std::string role_name;
+    int 
+};*/
 struct race
 {
     std::string race_name;
     bool darkvision;
     std::vector <ATTRIBUTES> attribute_bonus;
 
-    bool operator==(const race& other) const
-    {
-        bool is_equal = true;
-        if(race_name != other.race_name)
-            is_equal = false;
-        if(darkvision != other.darkvision)
-            is_equal = false;
-        for(int i = 0; i < attribute_bonus.size(); i++)
-        {
-            if(attribute_bonus[i] != other.attribute_bonus[i])
-                is_equal = false;
-        }
-        return is_equal;
-    }
 };
 race tiefling_race{"tiefling", true, {cha, cha}};
-std::vector <race> race_catalogue = {tiefling_race};
+race yuanti_race{"yuan-ti", true, {cha, cha, intelli}};
+export std::vector <race> race_catalogue = {tiefling_race, yuanti_race};
 export class Character
 {
     public:
@@ -46,17 +44,11 @@ export class Character
     {
         _race_name = race_name;
         Get_Race();
-        Get_Attribute_Race_Bonus();
     }
-
     void Get_Race()
     {
-        switch(_race_name)
-        {
-            case tiefling:
-                _race = race_catalogue[0];
-                break;
-        }
+        _race = race_catalogue[_race_name];
+        Get_Attribute_Race_Bonus();
     }
     void Get_Attribute_Race_Bonus()
     {

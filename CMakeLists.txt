@@ -8,22 +8,33 @@ find_package(SDL3 CONFIG REQUIRED)
 find_package(SDL3_image REQUIRED)
 find_package(GTest CONFIG REQUIRED)
 
-add_executable(DiceRoll 
+add_executable(DiceRoll
     src/main.cpp
-    src/character.cppm)
+)
 
-add_executable(DiceRollTests 
+target_sources(DiceRoll
+    PRIVATE
+        FILE_SET cxx_modules TYPE CXX_MODULES
+        FILES src/character.cppm
+)
+
+add_executable(DiceRollTests
     test/test.cpp
-    src/character.cppm)
+)
+
+target_sources(DiceRollTests
+    PRIVATE
+        FILE_SET cxx_modules TYPE CXX_MODULES
+        FILES src/character.cppm
+)
 
 target_link_libraries(DiceRollTests PRIVATE 
     GTest::gtest 
-    GTest::gtest_main 
-    GTest::gmock 
-    GTest::gmock_main)
+    GTest::gtest_main)
 
 target_link_libraries(DiceRoll PRIVATE 
     SDL3::SDL3 
     SDL3_image::SDL3_image)
 
 add_test(NAME AllTests COMMAND DiceRollTests)
+enable_testing()
