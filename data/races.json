@@ -1,0 +1,4 @@
+{
+    "tiefling" : {"darkvision" : true, "attributes" : [5, 5]},
+    "yuanti" : {"darkvision" : true, "attributes" : [5, 5, 3]}
+}

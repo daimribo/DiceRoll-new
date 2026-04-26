@@ -5,6 +5,7 @@
     [
         "sdl3",
         "sdl3-image",
-        "gtest"
+        "gtest",
+        "jsoncpp"
     ]
 }

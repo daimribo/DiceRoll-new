@@ -4,6 +4,7 @@ project(DiceRoll)
 
 set(CMAKE_CXX_STANDARD 20)
 
+find_package(jsoncpp CONFIG REQUIRED)
 find_package(SDL3 CONFIG REQUIRED)
 find_package(SDL3_image REQUIRED)
 find_package(GTest CONFIG REQUIRED)
@@ -30,11 +31,13 @@ target_sources(DiceRollTests
 
 target_link_libraries(DiceRollTests PRIVATE 
     GTest::gtest 
-    GTest::gtest_main)
+    GTest::gtest_main
+    JsonCpp::JsonCpp)
 
 target_link_libraries(DiceRoll PRIVATE 
     SDL3::SDL3 
-    SDL3_image::SDL3_image)
+    SDL3_image::SDL3_image
+    JsonCpp::JsonCpp)
 
 add_test(NAME AllTests COMMAND DiceRollTests)
 enable_testing()
