@@ -1,4 +1,5 @@
 {
     "tiefling" : {"darkvision" : true, "attributes" : [5, 5]},
-    "yuanti" : {"darkvision" : true, "attributes" : [5, 5, 3]}
+    "yuanti" : {"darkvision" : true, "attributes" : [5, 5, 3]},
+    "dragonborn" : {"darkvision" : false, "attributes" : [0, 0, 5]}
 }

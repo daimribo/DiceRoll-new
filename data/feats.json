@@ -1,0 +1,7 @@
+{
+    "race_feats": {
+    "yuanti" : {"Innate Spellcasting":{"feat_type" : "attack"}, 
+                "Magic Resistance": {"feat_type" : "resistance"}, 
+                "Poison Immunity" : {"feat_type" : "immunity"}}
+    }
+}

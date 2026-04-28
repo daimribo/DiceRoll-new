@@ -7,7 +7,6 @@ module;
 export module CharacterSheet;
 
 enum ATTRIBUTES{STR, DEX, CONST, INT, WIS, CHAR};
-enum FEATURE_TYPES{immunities, resistance, weakness, };
 struct attributes
 {
     int strength = 0;
@@ -17,11 +16,7 @@ struct attributes
     int wisdom = 0;
     int charisma = 0;
 };
-/*struct feat
-{
-    
-};
-struct role
+/*struct role
 {
     std::string role_name;
     int 
@@ -31,11 +26,9 @@ struct race
     std::string race_name;
     bool darkvision;
     std::vector <ATTRIBUTES> attribute_bonus;
+    std::vector <std::string> features;
 
 };
-//race tiefling_race{"tiefling", true, {cha, cha}};
-//race yuanti_race{"yuan-ti", true, {cha, cha , intelli}};
-//export std::vector <race> race_catalogue = {tiefling_race, yuanti_race};
 export class Character
 {
     public:
@@ -51,25 +44,29 @@ export class Character
     void Get_Race()
     {
         Json::Value race_obj;
+        Json::Value feat_obj;
         std::ifstream race_data("data/races.json");
+        std::ifstream feat_data("data/feats.json");
 
-        if (!race_data.is_open()) {
+        if (!race_data.is_open() || !feat_data.is_open()) {
         std::cerr << "FILE NOT OPENED\n";
         return;
         }
 
         Json::Reader reader;
-        if (!reader.parse(race_data, race_obj)) {
+        if (!reader.parse(race_data, race_obj) || !reader.parse(feat_data, feat_obj)) {
             std::cerr << "Failed to parse JSON:\n" << reader.getFormattedErrorMessages() << std::endl;
             return;
         }
 
         const Json::Value& r = race_obj[_race_name];
+        const Json::Value& f = feat_obj["race_feats"][_race_name];
 
-        if (r.isNull()) {
+        if (r.isNull() && f.isNull()) {
             std::cerr << "Race not found\n";
             return;
         }
+
 
         _race.race_name = _race_name;
         _race.darkvision = r["darkvision"].asBool();
@@ -80,6 +77,7 @@ export class Character
                 static_cast<ATTRIBUTES>(attr.asInt())
             );
         }
+        _race.features = f.getMemberNames();
     }
     void Get_Attribute_Race_Bonus(ATTRIBUTES attr)
     {
