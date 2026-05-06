@@ -1,7 +1,8 @@
 {
     "race_feats": {
-    "yuanti" : {"Innate Spellcasting":{"feat_type" : "attack"}, 
-                "Magic Resistance": {"feat_type" : "resistance"}, 
-                "Poison Immunity" : {"feat_type" : "immunity"}}
+    "yuanti" : {"Innate Spellcasting":{"feat_type" : "attack", "spell_1" : "Poison Spray", "spell_2" : "Animal Friendship"}, 
+                "Magic Resistance": {"feat_type" : "resistance", "weapon_dmg" : 3}, 
+                "Poison Immunity" : {"feat_type" : "immunity", "spell_dmg" :  6}},
+    "tiefling" : {"Hellish Resistance": {"feat_type" : "resistance", "spell_dmg" : 2}}
     }
 }

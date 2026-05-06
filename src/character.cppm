@@ -7,6 +7,8 @@ module;
 export module CharacterSheet;
 
 enum ATTRIBUTES{STR, DEX, CONST, INT, WIS, CHAR};
+enum SPELL_DMG{acid, cold, fire, force, lightning, necrotic, poison, psychic, radiant, thunder};
+enum WEAPON_DMG{bludgeoning, piercing, slashing, spell};
 struct attributes
 {
     int strength = 0;
@@ -16,11 +18,16 @@ struct attributes
     int wisdom = 0;
     int charisma = 0;
 };
-/*struct role
+struct character_class
 {
-    std::string role_name;
-    int 
-};*/
+    std::string class_name;
+    std::vector<std::string> armor_prof;
+    std::vector<std::string> weapon_prof;
+    std::vector<std::string> tool_prof;
+    int hit_die;
+    int hit_points;
+    int saving_throws [2];
+};
 struct race
 {
     std::string race_name;
@@ -33,12 +40,16 @@ export class Character
 {
     public:
     std::string _race_name;
+    std::string _class_name;
     race _race;
     attributes _attr;
-    Character(const std::string race_name)
+    character_class _class;
+    Character(const std::string race_name, const std::string class_name)
     {
         _race_name = race_name;
         Get_Race();
+        _class_name = class_name;
+        Get_Class();
     }
 
     void Get_Race()
@@ -67,15 +78,11 @@ export class Character
             return;
         }
 
-
         _race.race_name = _race_name;
         _race.darkvision = r["darkvision"].asBool();
 
-        for (const auto& attr : r["attributes"])
-        {
-            Get_Attribute_Race_Bonus(
-                static_cast<ATTRIBUTES>(attr.asInt())
-            );
+        for (const auto& attr : r["attributes"]){
+            Get_Attribute_Race_Bonus(static_cast<ATTRIBUTES>(attr.asInt()));
         }
         _race.features = f.getMemberNames();
     }
@@ -104,5 +111,29 @@ export class Character
         default:
             std::cerr<<"Nonexistent attributes were assigned to the race\n";
         }   
+    }
+    void Get_Class()
+    {
+        Json::Value class_obj;
+        std::ifstream class_data("data/character_classes.json");
+        Json::Reader reader;
+        reader.parse(class_data, class_obj);
+        const Json::Value& c = class_obj[_class_name];
+
+        _class.class_name = _class_name;
+        _class.hit_die = c["hit_die"].asInt();
+
+        for(const auto& armor_names : c["prof"]["armor"]){
+            _class.armor_prof.push_back(armor_names.asString());
+        }
+        for(const auto& weapon_names : c["prof"]["weapons"]){
+            _class.weapon_prof.push_back(weapon_names.asString());
+        }
+        for(const auto& tools : c["prof"]["tools"]){
+            _class.tool_prof.push_back(tools.asString());
+        }
+        for(int i = 0; i < 2; i++){
+        _class.saving_throws[i] = c["prof"]["saving_throws"][i].asInt();
+        }
     }
 };
