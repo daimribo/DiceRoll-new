@@ -17,6 +17,7 @@ target_sources(DiceRoll
     PRIVATE
         FILE_SET cxx_modules TYPE CXX_MODULES
         FILES src/character.cppm
+        FILES src/mechanics.cppm
 )
 
 add_executable(DiceRollTests
