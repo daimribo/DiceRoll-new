@@ -5,9 +5,8 @@ project(DiceRoll)
 set(CMAKE_CXX_STANDARD 20)
 
 find_package(jsoncpp CONFIG REQUIRED)
-find_package(SDL3 CONFIG REQUIRED)
-find_package(SDL3_image REQUIRED)
 find_package(GTest CONFIG REQUIRED)
+find_package(ftxui REQUIRED)
 
 add_executable(DiceRoll
     src/main.cpp
@@ -17,7 +16,6 @@ target_sources(DiceRoll
     PRIVATE
         FILE_SET cxx_modules TYPE CXX_MODULES
         FILES src/character.cppm
-        FILES src/mechanics.cppm
 )
 
 add_executable(DiceRollTests
@@ -36,9 +34,10 @@ target_link_libraries(DiceRollTests PRIVATE
     JsonCpp::JsonCpp)
 
 target_link_libraries(DiceRoll PRIVATE 
-    SDL3::SDL3 
-    SDL3_image::SDL3_image
-    JsonCpp::JsonCpp)
+    JsonCpp::JsonCpp
+    ftxui::screen
+    ftxui::dom
+    ftxui::component)
 
 add_test(NAME AllTests COMMAND DiceRollTests)
 enable_testing()
