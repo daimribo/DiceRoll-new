@@ -4,9 +4,11 @@ project(DiceRoll)
 
 set(CMAKE_CXX_STANDARD 20)
 
-find_package(jsoncpp CONFIG REQUIRED)
 find_package(GTest CONFIG REQUIRED)
 find_package(ftxui REQUIRED)
+find_package(PkgConfig REQUIRED)
+
+pkg_check_modules(JSONCPP jsoncpp)
 
 add_executable(DiceRoll
     src/main.cpp
@@ -31,13 +33,15 @@ target_sources(DiceRollTests
 target_link_libraries(DiceRollTests PRIVATE 
     GTest::gtest 
     GTest::gtest_main
-    JsonCpp::JsonCpp)
+    ${JSONCPP_LIBRARIES})
 
 target_link_libraries(DiceRoll PRIVATE 
-    JsonCpp::JsonCpp
+    ${JSONCPP_LIBRARIES}
     ftxui::screen
     ftxui::dom
     ftxui::component)
+
+target_include_directories(DiceRoll PRIVATE ${JSONCPP_INCLUDE_DIRS})
 
 add_test(NAME AllTests COMMAND DiceRollTests)
 enable_testing()
