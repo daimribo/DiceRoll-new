@@ -15,8 +15,8 @@ Element drawTitle(Screen &screen) {
     auto cell_down = text("▄") | logo_color;
     auto cell_empty = text(" ");
 
-    std::vector<Element> rows = {hbox(cell_down, cell_down, cell_down),
-                                 hbox(cell_full, cell_upper, cell_upper, cell_full)};
+    std::vector<Element> rows = {vbox(cell_down, cell_down, cell_down),
+                                 vbox(cell_full, cell_upper, cell_upper, cell_full)};
 
     auto art = vbox(rows);
     // looks bad
@@ -25,8 +25,14 @@ Element drawTitle(Screen &screen) {
 
 int main() {
 
-    auto screen = ftxui::Screen::Create(ftxui::Dimension::Full(), ftxui::Dimension::Full());
-    ftxui::Render(screen, drawTitle(screen));
+    auto app = App::TerminalOutput();
+
+    auto place_holder_title = text("DICE ROLL") | center;
+
+    std::vector<std::string> menu_options{"PLAY", "MULTIPLAYER", "CHARACTERS", "SETTINGS"};
+    int selected = 0;
+
+    auto menu_components = Menu(&menu_options, &selected);
 
     Character new_character("tiefling", "paladin");
     std::cout << "this character has " << new_character._attr.charisma << " charisma and "
@@ -38,8 +44,11 @@ int main() {
     for (int i = 0; i < 2; i++)
         std::cout << "sawing throw " << i + 1 << " : " << new_character._class.saving_throws[i]
                   << "\n";
-    // std::cout<<"direction "<<direction<<std::endl;
+
+    auto screen = Screen::Create(Dimension::Full(), Dimension::Full());
+    Render(screen, place_holder_title);
     screen.Print();
+    app.Loop(menu_components);
 
     return 0;
 }
