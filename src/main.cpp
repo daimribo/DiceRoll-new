@@ -9,7 +9,7 @@
 import CharacterSheet;
 using namespace ftxui;
 
-Element drawTitle(Screen &screen) {
+/*Element drawTitle(Screen &screen) {
     auto logo_color = color(Color::RGB(0, 0, 255));
     auto cell_full = text("█") | logo_color;
     auto cell_upper = text("▀") | logo_color;
@@ -22,17 +22,20 @@ Element drawTitle(Screen &screen) {
     auto art = vbox(rows);
     // looks bad
     return art;
-}
+}*/
+
+Component characterPage() { return Input("", "character name"); }
+
+enum MAIN_MENU { play, characters, multiplayer, settings };
 
 int main() {
     auto app = ScreenInteractive::Fullscreen();
+    Component state;
 
     auto placeholder_title = text("DICE ROLL") | center;
-
-    std::vector<std::string> menu_options{"PLAY", "MULTIPLAYER", "CHARACTERS", "SETTINGS"};
+    std::vector<std::string> menu_options{"PLAY", "CHARACTERS", "MULTIPLAYER", "SETTINGS"};
 
     int selected = 0;
-
     auto menu_components = Menu(&menu_options, &selected);
 
     auto main_menu_layout = Renderer(menu_components, [&] {
@@ -41,12 +44,21 @@ int main() {
 
     auto menu_event = CatchEvent(main_menu_layout, [&](Event event) {
         if (event == Event::Return) {
-            app.ExitLoopClosure()();
+            if (selected == characters) {
+                state = characterPage();
+            } else {
+                app.ExitLoopClosure()();
+            }
             return true;
         }
-
         return false;
     });
+    state = menu_event;
+
+    auto root = CatchEvent(Renderer([&] { return state->Render(); }),
+                           [&](Event event) { return state->OnEvent(event); });
+
+    Loop loop(&app, root);
 
     Character new_character("tiefling", "paladin");
     std::cout << "this character has " << new_character._attr.charisma << " charisma and "
@@ -58,8 +70,6 @@ int main() {
     for (int i = 0; i < 2; i++)
         std::cout << "sawing throw " << i + 1 << " : " << new_character._class.saving_throws[i]
                   << "\n";
-
-    Loop loop(&app, menu_event);
 
     loop.Run();
 
