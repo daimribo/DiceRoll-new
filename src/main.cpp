@@ -1,5 +1,6 @@
-#include <ftxui/component/app.hpp>
 #include <ftxui/component/component.hpp>
+#include <ftxui/component/loop.hpp>
+#include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
 #include <iostream>
@@ -24,15 +25,28 @@ Element drawTitle(Screen &screen) {
 }
 
 int main() {
+    auto app = ScreenInteractive::Fullscreen();
 
-    auto app = App::TerminalOutput();
-
-    auto place_holder_title = text("DICE ROLL") | center;
+    auto placeholder_title = text("DICE ROLL") | center;
 
     std::vector<std::string> menu_options{"PLAY", "MULTIPLAYER", "CHARACTERS", "SETTINGS"};
+
     int selected = 0;
 
     auto menu_components = Menu(&menu_options, &selected);
+
+    auto main_menu_layout = Renderer(menu_components, [&] {
+        return vbox({placeholder_title, separator(), menu_components->Render()}) | center;
+    });
+
+    auto menu_event = CatchEvent(main_menu_layout, [&](Event event) {
+        if (event == Event::Return) {
+            app.ExitLoopClosure()();
+            return true;
+        }
+
+        return false;
+    });
 
     Character new_character("tiefling", "paladin");
     std::cout << "this character has " << new_character._attr.charisma << " charisma and "
@@ -45,10 +59,9 @@ int main() {
         std::cout << "sawing throw " << i + 1 << " : " << new_character._class.saving_throws[i]
                   << "\n";
 
-    auto screen = Screen::Create(Dimension::Full(), Dimension::Full());
-    Render(screen, place_holder_title);
-    screen.Print();
-    app.Loop(menu_components);
+    Loop loop(&app, menu_event);
+
+    loop.Run();
 
     return 0;
 }
