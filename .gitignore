@@ -1,5 +1,2 @@
-build
-CmakeFiles
-vcpkg-configuration.json
-vcpkg_installed
-vcpkg.json
+target
+Cargo.lock
