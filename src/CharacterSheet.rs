@@ -29,7 +29,8 @@ enum WEAPONDMG {
     SPELL,
 }
 
-struct Attributes {
+#[derive(Debug)]
+pub struct Attributes {
     strength: u8,
     dexterity: u8,
     constitution: u8,
@@ -83,7 +84,9 @@ impl Character {
             character_class: class,
         };
 
-        character.getAttributeBonus(character.character_race.attribute_bonus[0]);
+        for i in 0..character.character_race.attribute_bonus.len() {
+            character.getAttributeBonus(character.character_race.attribute_bonus[i]);
+        }
         character
     }
 
