@@ -1,6 +1,7 @@
 use serde_json::Value;
 use std::fs;
 
+#[derive(Debug, Clone, Copy)]
 enum ATTRIBUTES {
     STR,
     DEX,
@@ -44,14 +45,13 @@ pub struct Class {
     tool_prof: Vec<String>,
     hit_die: u8,
     hit_points: u8,
-    saving_throw_1: u8,
-    saving_throw_2: u8,
+    saving_throws: Vec<ATTRIBUTES>,
 }
 
 pub struct Race {
     race_name: String,
     pub darkvision: bool,
-    attribute_bonus: Vec<u8>,
+    attribute_bonus: Vec<ATTRIBUTES>,
     //features : vec<&str>
 }
 
@@ -68,25 +68,26 @@ impl Character {
         let class = Self::getClass(class_name);
 
         let attr = Attributes {
-            strength: 10,
-            dexterity: 10,
-            constitution: 10,
-            intelligence: 10,
-            wisdom: 10,
-            charisma: 10,
+            strength: 0,
+            dexterity: 0,
+            constitution: 0,
+            intelligence: 0,
+            wisdom: 0,
+            charisma: 0,
         };
 
-        let character = Self {
+        let mut character = Self {
             character_name: character_name.to_string(),
             character_race: race,
             character_attr: attr,
             character_class: class,
         };
 
+        character.getAttributeBonus(character.character_race.attribute_bonus[0]);
         character
     }
 
-    fn getAttributeRaceBonus(&mut self, attr: ATTRIBUTES) {
+    fn getAttributeBonus(&mut self, attr: ATTRIBUTES) {
         match attr {
             ATTRIBUTES::STR => self.character_attr.strength += 1,
             ATTRIBUTES::DEX => self.character_attr.dexterity += 1,
@@ -110,7 +111,15 @@ impl Character {
                 .as_array()
                 .unwrap()
                 .iter()
-                .map(|v| v.as_u64().unwrap() as u8)
+                .map(|v| match v.as_str().unwrap() {
+                    "STR" => ATTRIBUTES::STR,
+                    "DEX" => ATTRIBUTES::DEX,
+                    "CONST" => ATTRIBUTES::CONST,
+                    "INT" => ATTRIBUTES::INT,
+                    "WIS" => ATTRIBUTES::WIS,
+                    "CHAR" => ATTRIBUTES::CHAR,
+                    _ => panic!("Unknown attribute"),
+                })
                 .collect(),
         }
     }
@@ -149,8 +158,20 @@ impl Character {
             hit_die: c["hit_die"].as_u64().unwrap() as u8,
             hit_points: c["hit_die"].as_u64().unwrap() as u8,
 
-            saving_throw_1: p["saving_throws"][0].as_u64().unwrap() as u8,
-            saving_throw_2: p["saving_throws"][1].as_u64().unwrap() as u8,
+            saving_throws: p["saving_throws"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|v| match v.as_str().unwrap() {
+                    "STR" => ATTRIBUTES::STR,
+                    "DEX" => ATTRIBUTES::DEX,
+                    "CONST" => ATTRIBUTES::CONST,
+                    "INT" => ATTRIBUTES::INT,
+                    "WIS" => ATTRIBUTES::WIS,
+                    "CHAR" => ATTRIBUTES::CHAR,
+                    _ => panic!("Unknown attribute"),
+                })
+                .collect(),
         }
     }
 }
