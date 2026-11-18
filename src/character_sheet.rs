@@ -40,17 +40,17 @@ pub struct Attributes {
 }
 
 pub struct Class {
-    class_name: String,
-    armor_prof: Vec<String>,
-    weapon_prof: Vec<String>,
-    tool_prof: Vec<String>,
+    pub class_name: String,
+    pub armor_prof: Vec<String>,
+    pub weapon_prof: Vec<String>,
+    pub tool_prof: Vec<String>,
     hit_die: u8,
-    hit_points: u8,
-    saving_throws: Vec<ATTRIBUTES>,
+    pub hit_points: u8,
+    pub saving_throws: Vec<ATTRIBUTES>,
 }
 
 pub struct Race {
-    race_name: String,
+    pub race_name: String,
     pub darkvision: bool,
     attribute_bonus: Vec<ATTRIBUTES>,
     //features : vec<&str>
@@ -65,8 +65,8 @@ pub struct Character {
 
 impl Character {
     pub fn new(character_name: &str, race_name: &str, class_name: &str) -> Self {
-        let race = Self::getRace(race_name);
-        let class = Self::getClass(class_name);
+        let race = Self::get_race(race_name);
+        let class = Self::get_class(class_name);
 
         let attr = Attributes {
             strength: 0,
@@ -85,12 +85,12 @@ impl Character {
         };
 
         for i in 0..character.character_race.attribute_bonus.len() {
-            character.getAttributeBonus(character.character_race.attribute_bonus[i]);
+            character.get_attribute_bonus(character.character_race.attribute_bonus[i]);
         }
         character
     }
 
-    fn getAttributeBonus(&mut self, attr: ATTRIBUTES) {
+    fn get_attribute_bonus(&mut self, attr: ATTRIBUTES) {
         match attr {
             ATTRIBUTES::STR => self.character_attr.strength += 1,
             ATTRIBUTES::DEX => self.character_attr.dexterity += 1,
@@ -101,7 +101,7 @@ impl Character {
         }
     }
 
-    fn getRace(race_name: &str) -> Race {
+    fn get_race(race_name: &str) -> Race {
         let data = fs::read_to_string("data/races.json").expect("Failed to read races.json");
 
         let race_obj: Value = serde_json::from_str(&data).expect("Invalid JSON");
@@ -127,7 +127,7 @@ impl Character {
         }
     }
 
-    fn getClass(class_name: &str) -> Class {
+    fn get_class(class_name: &str) -> Class {
         let data = fs::read_to_string("data/classes.json").unwrap();
         let class_obj: Value = serde_json::from_str(&data).unwrap();
 
