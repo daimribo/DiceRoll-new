@@ -6,7 +6,7 @@ fn main() {
     let new_character = Character::new("Josuke Higashikata", "tiefling", "paladin");
 
     println!(
-        "{}'s race is {} and class is {} so {:?}\n",
+        "\n{}'s race is {} and class is {} so {:?}",
         new_character.character_name,
         new_character.character_race.race_name,
         new_character.character_class.class_name,
@@ -18,5 +18,8 @@ fn main() {
         new_character.character_class.weapon_prof,
         new_character.character_class.tool_prof
     );
-    println!("");
+    println!(
+        "Their Features are: {:?}{:?}\n",
+        new_character.character_race.race_features, new_character.character_class.class_features,
+    );
 }

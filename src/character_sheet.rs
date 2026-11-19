@@ -2,7 +2,7 @@ use serde_json::Value;
 use std::fs;
 
 #[derive(Debug, Clone, Copy)]
-enum ATTRIBUTES {
+enum AttributeType {
     STR,
     DEX,
     CONST,
@@ -10,7 +10,7 @@ enum ATTRIBUTES {
     WIS,
     CHAR,
 }
-enum SPELLDMG {
+enum SpellDMG {
     ACID,
     COLD,
     FIRE,
@@ -22,11 +22,17 @@ enum SPELLDMG {
     RADIANT,
     THUNDER,
 }
-enum WEAPONDMG {
+enum WeaponDMG {
     BLUDGEONING,
     PIERCING,
     SLASHING,
     SPELL,
+}
+enum FeatureType {
+    SPELL,
+    RESISTANCE,
+    IMMUNITY,
+    SPECIALITY,
 }
 
 #[derive(Debug)]
@@ -46,14 +52,15 @@ pub struct Class {
     pub tool_prof: Vec<String>,
     hit_die: u8,
     pub hit_points: u8,
-    pub saving_throws: Vec<ATTRIBUTES>,
+    pub saving_throws: Vec<AttributeType>,
+    pub class_features: Vec<String>,
 }
 
 pub struct Race {
     pub race_name: String,
     pub darkvision: bool,
-    attribute_bonus: Vec<ATTRIBUTES>,
-    //features : vec<&str>
+    attribute_bonus: Vec<AttributeType>,
+    pub race_features: Vec<String>,
 }
 
 pub struct Character {
@@ -90,22 +97,25 @@ impl Character {
         character
     }
 
-    fn get_attribute_bonus(&mut self, attr: ATTRIBUTES) {
+    fn get_attribute_bonus(&mut self, attr: AttributeType) {
         match attr {
-            ATTRIBUTES::STR => self.character_attr.strength += 1,
-            ATTRIBUTES::DEX => self.character_attr.dexterity += 1,
-            ATTRIBUTES::CONST => self.character_attr.constitution += 1,
-            ATTRIBUTES::INT => self.character_attr.intelligence += 1,
-            ATTRIBUTES::WIS => self.character_attr.wisdom += 1,
-            ATTRIBUTES::CHAR => self.character_attr.charisma += 1,
+            AttributeType::STR => self.character_attr.strength += 1,
+            AttributeType::DEX => self.character_attr.dexterity += 1,
+            AttributeType::CONST => self.character_attr.constitution += 1,
+            AttributeType::INT => self.character_attr.intelligence += 1,
+            AttributeType::WIS => self.character_attr.wisdom += 1,
+            AttributeType::CHAR => self.character_attr.charisma += 1,
         }
     }
 
     fn get_race(race_name: &str) -> Race {
-        let data = fs::read_to_string("data/races.json").expect("Failed to read races.json");
+        let race_data = fs::read_to_string("data/races.json").expect("Failed to read races.json");
+        let feat_data = fs::read_to_string("data/feats.json").expect("Failed to read feats.json");
 
-        let race_obj: Value = serde_json::from_str(&data).expect("Invalid JSON");
+        let race_obj: Value = serde_json::from_str(&race_data).expect("Invalid JSON");
+        let feat_obj: Value = serde_json::from_str(&feat_data).expect("Invalid JSON");
         let r = race_obj.get(race_name).unwrap();
+        let f = feat_obj.get("race_feats").unwrap();
 
         Race {
             race_name: race_name.to_string(),
@@ -115,24 +125,34 @@ impl Character {
                 .unwrap()
                 .iter()
                 .map(|v| match v.as_str().unwrap() {
-                    "STR" => ATTRIBUTES::STR,
-                    "DEX" => ATTRIBUTES::DEX,
-                    "CONST" => ATTRIBUTES::CONST,
-                    "INT" => ATTRIBUTES::INT,
-                    "WIS" => ATTRIBUTES::WIS,
-                    "CHAR" => ATTRIBUTES::CHAR,
+                    "STR" => AttributeType::STR,
+                    "DEX" => AttributeType::DEX,
+                    "CONST" => AttributeType::CONST,
+                    "INT" => AttributeType::INT,
+                    "WIS" => AttributeType::WIS,
+                    "CHAR" => AttributeType::CHAR,
                     _ => panic!("Unknown attribute"),
                 })
+                .collect(),
+            race_features: f[race_name]
+                .as_object()
+                .unwrap()
+                .keys()
+                .map(|v| v.to_string())
                 .collect(),
         }
     }
 
     fn get_class(class_name: &str) -> Class {
         let data = fs::read_to_string("data/classes.json").unwrap();
+        let feat_data = fs::read_to_string("data/feats.json").expect("Failed to read feats.json");
+
         let class_obj: Value = serde_json::from_str(&data).unwrap();
+        let feat_obj: Value = serde_json::from_str(&feat_data).expect("Invalid JSON");
 
         let c = class_obj.get(class_name).unwrap();
         let p = c.get("prof").unwrap();
+        let f = feat_obj.get("class_feats").unwrap();
 
         Class {
             class_name: class_name.to_string(),
@@ -166,14 +186,20 @@ impl Character {
                 .unwrap()
                 .iter()
                 .map(|v| match v.as_str().unwrap() {
-                    "STR" => ATTRIBUTES::STR,
-                    "DEX" => ATTRIBUTES::DEX,
-                    "CONST" => ATTRIBUTES::CONST,
-                    "INT" => ATTRIBUTES::INT,
-                    "WIS" => ATTRIBUTES::WIS,
-                    "CHAR" => ATTRIBUTES::CHAR,
+                    "STR" => AttributeType::STR,
+                    "DEX" => AttributeType::DEX,
+                    "CONST" => AttributeType::CONST,
+                    "INT" => AttributeType::INT,
+                    "WIS" => AttributeType::WIS,
+                    "CHAR" => AttributeType::CHAR,
                     _ => panic!("Unknown attribute"),
                 })
+                .collect(),
+            class_features: f[class_name]
+                .as_object()
+                .unwrap()
+                .keys()
+                .map(|v| v.to_string())
                 .collect(),
         }
     }
