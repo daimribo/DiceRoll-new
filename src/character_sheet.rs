@@ -10,7 +10,9 @@ enum AttributeType {
     WIS,
     CHAR,
 }
-enum SpellDMG {
+
+#[derive(Debug)]
+pub enum DMGType {
     ACID,
     COLD,
     FIRE,
@@ -21,18 +23,10 @@ enum SpellDMG {
     PSYCHIC,
     RADIANT,
     THUNDER,
-}
-enum WeaponDMG {
     BLUDGEONING,
     PIERCING,
     SLASHING,
     SPELL,
-}
-enum FeatureType {
-    SPELL,
-    RESISTANCE,
-    IMMUNITY,
-    SPECIALITY,
 }
 
 #[derive(Debug)]
@@ -60,7 +54,7 @@ pub struct Race {
     pub race_name: String,
     pub darkvision: bool,
     attribute_bonus: Vec<AttributeType>,
-    pub race_features: Vec<String>,
+    pub race_immunities: Vec<DMGType>,
 }
 
 pub struct Character {
@@ -115,7 +109,38 @@ impl Character {
         let race_obj: Value = serde_json::from_str(&race_data).expect("Invalid JSON");
         let feat_obj: Value = serde_json::from_str(&feat_data).expect("Invalid JSON");
         let r = race_obj.get(race_name).unwrap();
-        let f = feat_obj.get("race_feats").unwrap();
+        let f = feat_obj.get("race_feats").unwrap()[race_name]
+            .as_object()
+            .unwrap();
+
+        let mut race_immunities: Vec<DMGType> = Vec::new();
+
+        for (feat_name, feat) in f {
+            let feat_type = feat["feat_type"].as_str();
+
+            if feat_type == Some("immunity") {
+                let a = feat["dmg_type"].as_str();
+                let immunity = match a {
+                    Some("ACID") => DMGType::ACID,
+                    Some("COLD") => DMGType::COLD,
+                    Some("FIRE") => DMGType::FIRE,
+                    Some("FORCE") => DMGType::FORCE,
+                    Some("LIGHTNING") => DMGType::LIGHTNING,
+                    Some("NECROTIC") => DMGType::NECROTIC,
+                    Some("POISON") => DMGType::POISON,
+                    Some("PSYCHIC") => DMGType::PSYCHIC,
+                    Some("RADIANT") => DMGType::RADIANT,
+                    Some("THUNDER") => DMGType::THUNDER,
+                    Some("BLUDGEONING") => DMGType::BLUDGEONING,
+                    Some("PIERCING") => DMGType::PIERCING,
+                    Some("SLASHING") => DMGType::SLASHING,
+                    Some("SPELL") => DMGType::SPELL,
+                    _ => panic!("no dmg type!"),
+                };
+
+                race_immunities.push(immunity);
+            }
+        }
 
         Race {
             race_name: race_name.to_string(),
@@ -134,12 +159,7 @@ impl Character {
                     _ => panic!("Unknown attribute"),
                 })
                 .collect(),
-            race_features: f[race_name]
-                .as_object()
-                .unwrap()
-                .keys()
-                .map(|v| v.to_string())
-                .collect(),
+            race_immunities,
         }
     }
 

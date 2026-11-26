@@ -1,9 +1,13 @@
 mod character_sheet;
 
 use character_sheet::Character;
+use ratatui::{DefaultTerminal, Frame};
 
-fn main() {
-    let new_character = Character::new("Josuke Higashikata", "tiefling", "paladin");
+//TRY CREATING CHARACTER CREATION MENU TO HANDLE ATTRIBUTES!!!
+//THEN LEARN HOW TO HANDLE JSON FEATURE READING
+
+fn main() -> color_eyre::Result<()> {
+    let new_character = Character::new("Josuke Higashikata", "yuanti", "paladin");
 
     println!(
         "\n{}'s race is {} and class is {} so {:?}",
@@ -19,7 +23,24 @@ fn main() {
         new_character.character_class.tool_prof
     );
     println!(
-        "Their Features are: {:?}{:?}\n",
-        new_character.character_race.race_features, new_character.character_class.class_features,
+        "immunities : {:?}",
+        new_character.character_race.race_immunities
     );
+
+    color_eyre::install()?;
+    ratatui::run(app)?;
+    Ok(())
+}
+
+fn app(terminal: &mut DefaultTerminal) -> std::io::Result<()> {
+    loop {
+        terminal.draw(render)?;
+        if crossterm::event::read()?.is_key_press() {
+            break Ok(());
+        }
+    }
+}
+
+fn render(frame: &mut Frame) {
+    frame.render_widget("hello world", frame.area());
 }

@@ -1,9 +1,9 @@
 {
     "race_feats": {
         "yuanti" : {"Innate Spellcasting" : {"feat_type" : "spell", "spells" : ["Poison Spray","Animal Friendship"]}, 
-                    "Magic Resistance": {"feat_type" : "resistance", "weapon_dmg" : 3}, 
-                    "Poison Immunity" : {"feat_type" : "immunity", "spell_dmg" :  6}},
-        "tiefling" : {"Hellish Resistance": {"feat_type" : "resistance", "spell_dmg" : 2}}
+                    "Magic Resistance": {"feat_type" : "resistance", "dmg_type" : "SPELL"}, 
+                    "Poison Immunity" : {"feat_type" : "immunity", "dmg_type" :  "POISON"}},
+        "tiefling" : {"Hellish Resistance": {"feat_type" : "resistance", "dmg_type" : "FIRE"}}
     },
     "class_feats":{
         "paladin" : {"Divine Sense" : {"feat_type" : "spell", "level" : 1, "spells" : ["Divine Sense"]},
