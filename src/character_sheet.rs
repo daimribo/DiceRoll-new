@@ -11,7 +11,7 @@ enum AttributeType {
     CHAR,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum DMGType {
     ACID,
     COLD,
@@ -141,8 +141,12 @@ impl Character {
                 };
                 if feat_type == Some("immunity") {
                     race_immunities.push(dmg_type);
+                    race_immunities.sort();
+                    race_immunities.dedup();
                 } else {
                     race_resistances.push(dmg_type);
+                    race_resistances.sort();
+                    race_resistances.dedup();
                 }
             }
         }
