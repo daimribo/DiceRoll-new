@@ -11,7 +11,7 @@ enum AttributeType {
     CHAR,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum DMGType {
     ACID,
     COLD,
@@ -55,6 +55,7 @@ pub struct Race {
     pub darkvision: bool,
     attribute_bonus: Vec<AttributeType>,
     pub race_immunities: Vec<DMGType>,
+    pub race_resistances: Vec<DMGType>,
 }
 
 pub struct Character {
@@ -114,13 +115,14 @@ impl Character {
             .unwrap();
 
         let mut race_immunities: Vec<DMGType> = Vec::new();
+        let mut race_resistances: Vec<DMGType> = Vec::new();
 
         for (feat_name, feat) in f {
             let feat_type = feat["feat_type"].as_str();
 
-            if feat_type == Some("immunity") {
+            if feat_type == Some("immunity") || feat_type == Some("resistance") {
                 let a = feat["dmg_type"].as_str();
-                let immunity = match a {
+                let dmg_type = match a {
                     Some("ACID") => DMGType::ACID,
                     Some("COLD") => DMGType::COLD,
                     Some("FIRE") => DMGType::FIRE,
@@ -137,8 +139,11 @@ impl Character {
                     Some("SPELL") => DMGType::SPELL,
                     _ => panic!("no dmg type!"),
                 };
-
-                race_immunities.push(immunity);
+                if feat_type == Some("immunity") {
+                    race_immunities.push(dmg_type);
+                } else {
+                    race_resistances.push(dmg_type);
+                }
             }
         }
 
@@ -160,6 +165,7 @@ impl Character {
                 })
                 .collect(),
             race_immunities,
+            race_resistances,
         }
     }
 

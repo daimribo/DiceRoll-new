@@ -23,8 +23,8 @@ fn main() -> color_eyre::Result<()> {
         new_character.character_class.tool_prof
     );
     println!(
-        "immunities : {:?}",
-        new_character.character_race.race_immunities
+        "immunities : {:?}, resistances : {:?}",
+        new_character.character_race.race_immunities, new_character.character_race.race_resistances
     );
 
     color_eyre::install()?;
