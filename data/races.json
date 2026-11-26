@@ -1,5 +1,5 @@
 {
-    "tiefling" : {"darkvision" : true, "attributes" : ["CHAR", "CHAR"]},
-    "yuanti" : {"darkvision" : true, "attributes" : ["CHAR", "CHAR", "CONST"]},
-    "dragonborn" : {"darkvision" : false, "attributes" : ["STR", "STR", "CHAR"]}
+    "tiefling" : {"darkvision" : true, "attributes" : ["CHAR", "CHAR"], "languages" : ["common","infernal"]},
+    "yuanti" : {"darkvision" : true, "attributes" : ["CHAR", "CHAR", "CONST"], "languages" : ["common", "abyssal", "draconic"]},
+    "dragonborn" : {"darkvision" : false, "attributes" : ["STR", "STR", "CHAR"], "languages" : ["common", "draconic"]}
 }

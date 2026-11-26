@@ -53,6 +53,7 @@ pub struct Class {
 pub struct Race {
     pub race_name: String,
     pub darkvision: bool,
+    race_languages: Vec<String>,
     attribute_bonus: Vec<AttributeType>,
     pub race_immunities: Vec<DMGType>,
     pub race_resistances: Vec<DMGType>,
@@ -63,6 +64,7 @@ pub struct Character {
     pub character_race: Race,
     pub character_attr: Attributes,
     pub character_class: Class,
+    pub character_languages: Vec<String>,
 }
 
 impl Character {
@@ -84,11 +86,16 @@ impl Character {
             character_race: race,
             character_attr: attr,
             character_class: class,
+            character_languages: Vec::new(),
         };
 
         for i in 0..character.character_race.attribute_bonus.len() {
             character.get_attribute_bonus(character.character_race.attribute_bonus[i]);
         }
+        for language in character.character_race.race_languages.clone() {
+            character.character_languages.push(language);
+        }
+
         character
     }
 
@@ -170,6 +177,12 @@ impl Character {
                 .collect(),
             race_immunities,
             race_resistances,
+            race_languages: r["languages"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|v| v.as_str().unwrap().to_string())
+                .collect(),
         }
     }
 
