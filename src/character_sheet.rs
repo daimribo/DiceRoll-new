@@ -110,6 +110,40 @@ impl Character {
         }
     }
 
+    fn match_dmgtype(dmg_type_str: &str) -> DMGType {
+        let dmg_type = match dmg_type_str {
+            "ACID" => DMGType::ACID,
+            "COLD" => DMGType::COLD,
+            "FIRE" => DMGType::FIRE,
+            "FORCE" => DMGType::FORCE,
+            "LIGHTNING" => DMGType::LIGHTNING,
+            "NECROTIC" => DMGType::NECROTIC,
+            "POISON" => DMGType::POISON,
+            "PSYCHIC" => DMGType::PSYCHIC,
+            "RADIANT" => DMGType::RADIANT,
+            "THUNDER" => DMGType::THUNDER,
+            "BLUDGEONING" => DMGType::BLUDGEONING,
+            "PIERCING" => DMGType::PIERCING,
+            "SLASHING" => DMGType::SLASHING,
+            "SPELL" => DMGType::SPELL,
+            _ => panic!("no dmg type!"),
+        };
+        return dmg_type;
+    }
+
+    fn match_attributetype(attribute_str: &str) -> AttributeType {
+        let attribute_type = match attribute_str {
+            "STR" => AttributeType::STR,
+            "DEX" => AttributeType::DEX,
+            "CONST" => AttributeType::CONST,
+            "INT" => AttributeType::INT,
+            "WIS" => AttributeType::WIS,
+            "CHAR" => AttributeType::CHAR,
+            _ => panic!("Unknown attribute"),
+        };
+        return attribute_type;
+    }
+
     fn get_race(race_name: &str) -> Race {
         let race_data = fs::read_to_string("data/races.json").expect("Failed to read races.json");
         let feat_data = fs::read_to_string("data/feats.json").expect("Failed to read feats.json");
@@ -129,23 +163,7 @@ impl Character {
 
             if feat_type == Some("immunity") || feat_type == Some("resistance") {
                 let a = feat["dmg_type"].as_str();
-                let dmg_type = match a {
-                    Some("ACID") => DMGType::ACID,
-                    Some("COLD") => DMGType::COLD,
-                    Some("FIRE") => DMGType::FIRE,
-                    Some("FORCE") => DMGType::FORCE,
-                    Some("LIGHTNING") => DMGType::LIGHTNING,
-                    Some("NECROTIC") => DMGType::NECROTIC,
-                    Some("POISON") => DMGType::POISON,
-                    Some("PSYCHIC") => DMGType::PSYCHIC,
-                    Some("RADIANT") => DMGType::RADIANT,
-                    Some("THUNDER") => DMGType::THUNDER,
-                    Some("BLUDGEONING") => DMGType::BLUDGEONING,
-                    Some("PIERCING") => DMGType::PIERCING,
-                    Some("SLASHING") => DMGType::SLASHING,
-                    Some("SPELL") => DMGType::SPELL,
-                    _ => panic!("no dmg type!"),
-                };
+                let dmg_type = Self::match_dmgtype(a.unwrap());
                 if feat_type == Some("immunity") {
                     race_immunities.push(dmg_type);
                     race_immunities.sort();
@@ -165,15 +183,7 @@ impl Character {
                 .as_array()
                 .unwrap()
                 .iter()
-                .map(|v| match v.as_str().unwrap() {
-                    "STR" => AttributeType::STR,
-                    "DEX" => AttributeType::DEX,
-                    "CONST" => AttributeType::CONST,
-                    "INT" => AttributeType::INT,
-                    "WIS" => AttributeType::WIS,
-                    "CHAR" => AttributeType::CHAR,
-                    _ => panic!("Unknown attribute"),
-                })
+                .map(|v| Self::match_attributetype(v.as_str().unwrap()))
                 .collect(),
             race_immunities,
             race_resistances,
@@ -228,15 +238,7 @@ impl Character {
                 .as_array()
                 .unwrap()
                 .iter()
-                .map(|v| match v.as_str().unwrap() {
-                    "STR" => AttributeType::STR,
-                    "DEX" => AttributeType::DEX,
-                    "CONST" => AttributeType::CONST,
-                    "INT" => AttributeType::INT,
-                    "WIS" => AttributeType::WIS,
-                    "CHAR" => AttributeType::CHAR,
-                    _ => panic!("Unknown attribute"),
-                })
+                .map(|v| Self::match_attributetype(v.as_str().unwrap()))
                 .collect(),
             class_features: f[class_name]
                 .as_object()
