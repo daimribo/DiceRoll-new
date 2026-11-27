@@ -7,12 +7,15 @@ use ratatui::{DefaultTerminal, Frame};
 //THEN LEARN HOW TO HANDLE JSON FEATURE READING
 
 fn main() -> color_eyre::Result<()> {
-    let new_character = Character::new("Josuke Higashikata", "yuanti", "paladin");
+    let mut new_character = Character::new("Josuke Higashikata", "yuanti", "paladin");
+    new_character.level_up();
+    new_character.level_up();
 
     println!(
-        "\n{}'s race is {} and class is {} so {:?}",
+        "\n{}'s race is {}, level is {} and class is {} so {:?}",
         new_character.character_name,
         new_character.character_race.race_name,
+        new_character.character_level,
         new_character.character_class.class_name,
         new_character.character_attr
     );

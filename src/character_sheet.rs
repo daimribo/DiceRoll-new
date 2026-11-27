@@ -103,7 +103,33 @@ impl Character {
     }
 
     pub fn level_up(&mut self) {
+        let feat_data = fs::read_to_string("data/feats.json").expect("Failed to read feats.json");
+        let feat_obj: Value = serde_json::from_str(&feat_data).expect("Invalid JSON");
+        let f = feat_obj.get("race_feats").unwrap()[self.character_race.race_name.clone()]
+            .as_object()
+            .unwrap();
+
         self.character_level += 1;
+
+        for (feat_name, feat) in f {
+            let feat_type = feat["feat_type"].as_str().unwrap();
+            if feat_type == "spell" {
+                if feat["spells"][self.character_level.to_string()]
+                    .as_array()
+                    .is_some()
+                {
+                    let a = feat["spells"][self.character_level.to_string()]
+                        .as_array()
+                        .unwrap();
+
+                    for spell_name in a {
+                        self.character_race
+                            .race_spells
+                            .push(spell_name.as_str().unwrap().to_string());
+                    }
+                }
+            }
+        }
     }
 
     fn get_attribute_bonus(&mut self, attr: AttributeType) {
@@ -170,8 +196,8 @@ impl Character {
             let feat_type = feat["feat_type"].as_str();
 
             if feat_type == Some("immunity") || feat_type == Some("resistance") {
-                let a = feat["dmg_type"].as_str();
-                let dmg_type = Self::match_dmgtype(a.unwrap());
+                let a = feat["dmg_type"].as_str().unwrap();
+                let dmg_type = Self::match_dmgtype(a);
                 if feat_type == Some("immunity") {
                     race_immunities.push(dmg_type);
                     race_immunities.sort();

@@ -6,9 +6,9 @@
         "tiefling" : {"Hellish Resistance": {"feat_type" : "resistance", "dmg_type" : "FIRE"}}
     },
     "class_feats":{
-        "paladin" : {"Divine Sense" : {"feat_type" : "spell", "level" : 1, "spells" : ["Divine Sense"]},
-                    "Lay on Hands" : {"feat_type" : "spell", "level" : 1, "spells" : ["Lay on Hands"]},
-                    "Fighting Style" : {"feat_type" : "speciality", "level" : 2}
+        "paladin" : { "1" : {"Divine Sense" :  {"feat_type" : "spell", "spells" : ["Divine Sense"]},
+                            "Lay on Hands" : {"feat_type" : "spell", "spells" : ["Lay on Hands"]}},
+                    "2" : {"Fighting Style" : {"feat_type" : "speciality"}}
                     }
     }
 }
