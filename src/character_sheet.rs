@@ -57,11 +57,13 @@ pub struct Race {
     attribute_bonus: Vec<AttributeType>,
     pub race_immunities: Vec<DMGType>,
     pub race_resistances: Vec<DMGType>,
+    pub race_spells: Vec<String>,
 }
 
 pub struct Character {
     pub character_name: String,
     pub character_race: Race,
+    pub character_level: u8,
     pub character_attr: Attributes,
     pub character_class: Class,
     pub character_languages: Vec<String>,
@@ -84,6 +86,7 @@ impl Character {
         let mut character = Self {
             character_name: character_name.to_string(),
             character_race: race,
+            character_level: 1,
             character_attr: attr,
             character_class: class,
             character_languages: Vec::new(),
@@ -97,6 +100,10 @@ impl Character {
         }
 
         character
+    }
+
+    pub fn level_up(&mut self) {
+        self.character_level += 1;
     }
 
     fn get_attribute_bonus(&mut self, attr: AttributeType) {
@@ -157,6 +164,7 @@ impl Character {
 
         let mut race_immunities: Vec<DMGType> = Vec::new();
         let mut race_resistances: Vec<DMGType> = Vec::new();
+        let mut race_spells: Vec<String> = Vec::new();
 
         for (feat_name, feat) in f {
             let feat_type = feat["feat_type"].as_str();
@@ -172,6 +180,11 @@ impl Character {
                     race_resistances.push(dmg_type);
                     race_resistances.sort();
                     race_resistances.dedup();
+                }
+            } else if feat_type == Some("spell") {
+                let a = feat["spells"]["1"].as_array().unwrap();
+                for spell_name in a {
+                    race_spells.push(spell_name.as_str().unwrap().to_string());
                 }
             }
         }
@@ -193,6 +206,7 @@ impl Character {
                 .iter()
                 .map(|v| v.as_str().unwrap().to_string())
                 .collect(),
+            race_spells: race_spells,
         }
     }
 

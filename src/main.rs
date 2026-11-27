@@ -17,16 +17,20 @@ fn main() -> color_eyre::Result<()> {
         new_character.character_attr
     );
     println!(
-        "They are proficient in {:?} armor, in {:?} weapons and in {:?} tools.",
+        "\nThey are proficient in {:?} armor, in {:?} weapons and in {:?} tools.",
         new_character.character_class.armor_prof,
         new_character.character_class.weapon_prof,
         new_character.character_class.tool_prof
     );
     println!(
-        "immunities : {:?}, resistances : {:?}, They speak : {:?}",
+        "\nimmunities : {:?}, resistances : {:?}, They speak : {:?}",
         new_character.character_race.race_immunities,
         new_character.character_race.race_resistances,
         new_character.character_languages
+    );
+    println!(
+        "\nThey can cast: {:?}",
+        new_character.character_race.race_spells
     );
 
     color_eyre::install()?;
