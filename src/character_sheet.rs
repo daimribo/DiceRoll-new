@@ -58,6 +58,7 @@ pub struct Race {
     pub race_immunities: Vec<DMGType>,
     pub race_resistances: Vec<DMGType>,
     pub race_spells: Vec<String>,
+    pub race_attacks: Vec<String>,
 }
 
 pub struct Character {
@@ -177,6 +178,23 @@ impl Character {
         return attribute_type;
     }
 
+    fn get_save(dmg_type: DMGType) -> AttributeType {
+        let attribute_type = match dmg_type {
+            DMGType::ACID => AttributeType::DEX,
+            DMGType::COLD => AttributeType::CONST,
+            DMGType::FIRE => AttributeType::DEX,
+            DMGType::FORCE => AttributeType::STR,
+            DMGType::LIGHTNING => AttributeType::DEX,
+            DMGType::NECROTIC => AttributeType::CONST,
+            DMGType::POISON => AttributeType::CONST,
+            DMGType::PSYCHIC => AttributeType::INT,
+            DMGType::RADIANT => AttributeType::CONST,
+            DMGType::THUNDER => AttributeType::CONST,
+            _ => panic!("Unknown damage type"),
+        };
+        return attribute_type;
+    }
+
     fn get_race(race_name: &str) -> Race {
         let race_data = fs::read_to_string("data/races.json").expect("Failed to read races.json");
         let feat_data = fs::read_to_string("data/feats.json").expect("Failed to read feats.json");
@@ -191,6 +209,7 @@ impl Character {
         let mut race_immunities: Vec<DMGType> = Vec::new();
         let mut race_resistances: Vec<DMGType> = Vec::new();
         let mut race_spells: Vec<String> = Vec::new();
+        let mut race_attacks: Vec<String> = Vec::new();
 
         for (feat_name, feat) in f {
             let feat_type = feat["feat_type"].as_str();
@@ -211,6 +230,18 @@ impl Character {
                 let a = feat["spells"]["1"].as_array().unwrap();
                 for spell_name in a {
                     race_spells.push(spell_name.as_str().unwrap().to_string());
+                }
+            } else if feat_type == Some("ancestry") {
+                let a = feat["types"].as_array().unwrap();
+                for types in a {
+                    let type_feats = types.as_object().unwrap()["feats"].as_array().unwrap();
+                    for ancestry_feats in type_feats {
+                        let feat_items = ancestry_feats.as_object().unwrap()["attack_name"]
+                            .as_str()
+                            .unwrap()
+                            .to_string();
+                        race_attacks.push(feat_items);
+                    }
                 }
             }
         }
@@ -233,6 +264,7 @@ impl Character {
                 .map(|v| v.as_str().unwrap().to_string())
                 .collect(),
             race_spells: race_spells,
+            race_attacks: race_attacks,
         }
     }
 

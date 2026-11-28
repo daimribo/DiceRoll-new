@@ -7,7 +7,7 @@ use ratatui::{DefaultTerminal, Frame};
 //THEN LEARN HOW TO HANDLE JSON FEATURE READING
 
 fn main() -> color_eyre::Result<()> {
-    let mut new_character = Character::new("Josuke Higashikata", "yuanti", "paladin");
+    let mut new_character = Character::new("Josuke Higashikata", "dragonborn", "paladin");
     new_character.level_up();
     new_character.level_up();
 
@@ -32,8 +32,8 @@ fn main() -> color_eyre::Result<()> {
         new_character.character_languages
     );
     println!(
-        "\nThey can cast: {:?}",
-        new_character.character_race.race_spells
+        "\nThey can cast: {:?}, their race attacks are {:?}",
+        new_character.character_race.race_spells, new_character.character_race.race_attacks
     );
 
     color_eyre::install()?;

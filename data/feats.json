@@ -1,14 +1,72 @@
 {
     "race_feats": {
-        "yuanti" : {"Innate Spellcasting" : {"feat_type" : "spell", "spells" : { "1" : ["Poison Spray","Animal Friendship"], "3" : ["Suggestion"]}}, 
-                    "Magic Resistance": {"feat_type" : "resistance", "dmg_type" : "SPELL"}, 
-                    "Poison Immunity" : {"feat_type" : "immunity", "dmg_type" :  "POISON"}},
-        "tiefling" : {"Hellish Resistance": {"feat_type" : "resistance", "dmg_type" : "FIRE"}}
-    },
-    "class_feats":{
-        "paladin" : { "1" : {"Divine Sense" :  {"feat_type" : "spell", "spells" : ["Divine Sense"]},
-                            "Lay on Hands" : {"feat_type" : "spell", "spells" : ["Lay on Hands"]}},
-                    "2" : {"Fighting Style" : {"feat_type" : "speciality"}}
+        "yuanti": {
+            "Innate Spellcasting": {
+                "feat_type": "spell",
+                "spells": {
+                    "1": [
+                        "Poison Spray",
+                        "Animal Friendship"
+                    ],
+                    "3": [
+                        "Suggestion"
+                    ]
+                }
+            },
+            "Magic Resistance": {
+                "feat_type": "advantage",
+                "dmg_type": "SPELL"
+            },
+            "Poison Immunity": {
+                "feat_type": "immunity",
+                "dmg_type": "POISON"
+            }
+        },
+        "tiefling": {
+            "Hellish Resistance": {
+                "feat_type": "resistance",
+                "dmg_type": "FIRE"
+            }
+        },
+        "dragonborn": {
+            "Draconic Ancestry": {
+                "feat_type": "ancestry",
+                "types": [
+                    {
+                        "type": "black",
+                        "feats": [
+                            {
+                                "feat_type": "attack",
+                                "attack_name": "Breath Weapon",
+                                "dmg_type": "ACID"
+                            }
+                        ]
                     }
+                ]
+            }
+        }
+    },
+    "class_feats": {
+        "paladin": {
+            "1": {
+                "Divine Sense": {
+                    "feat_type": "spell",
+                    "spells": [
+                        "Divine Sense"
+                    ]
+                },
+                "Lay on Hands": {
+                    "feat_type": "spell",
+                    "spells": [
+                        "Lay on Hands"
+                    ]
+                }
+            },
+            "2": {
+                "Fighting Style": {
+                    "feat_type": "speciality"
+                }
+            }
+        }
     }
 }

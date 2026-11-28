@@ -1,3 +1,24 @@
 {
-    "paladin" : {"hit_die" : 10 ,"prof" : {"armor" : ["light", "medium", "heavy", "shield"], "weapons" : ["simple", "martial"], "tools" : ["none"], "saving_throws" : ["WIS", "CHAR"]}}
+    "paladin": {
+        "hit_die": 10,
+        "prof": {
+            "armor": [
+                "light",
+                "medium",
+                "heavy",
+                "shield"
+            ],
+            "weapons": [
+                "simple",
+                "martial"
+            ],
+            "tools": [
+                "none"
+            ],
+            "saving_throws": [
+                "WIS",
+                "CHAR"
+            ]
+        }
+    }
 }
